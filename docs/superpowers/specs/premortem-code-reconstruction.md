@@ -30,15 +30,15 @@ pré-mortem em PRs dos projetos (KCP, Kratos, etc.).
 - O loop de eval do skill-creator (otimização de description) — fase seguinte, opcional
 - Integração CI (já temos `premortem.yml` corrigido no review)
 
-## Fontes verificadas (HTTP 200, lidas)
+## Fontes verificadas (HTTP 200, lidas) + licenças (T0 — 2026-06-19)
 
-| Fonte | Uso | Licença (a confirmar na Fase 5) |
-|---|---|---|
-| `honnibal/claude-skills/pre-mortem.md.txt` | catálogo (10 cat.), formato post-mortem, calibração, workflow | verificar |
-| `IgnatG/terraform-reviewer/.../sarif_export.py` | **padrão** do SARIF 2.1.0 (reimplementar, não copiar) | verificar |
-| `karim-bhalwani/agentic-harness/.../fragility-catalogue.md` | formato standalone + "Hardening" | verificar |
-| `stephenkiers/claude-helpers/expert-pre-mortem.md` | scan no `git diff`, assessment | verificar |
-| `boshu2/agentops/skills/pre-mortem/SKILL.md` | escada de veredito, no-self-grading, kill-criteria | verificar |
+| Fonte | Uso | Licença | Decisão T0 |
+|---|---|---|---|
+| `honnibal/claude-skills/pre-mortem.md.txt` | catálogo (10 cat.), formato post-mortem, calibração, workflow | **MIT** | adaptar + atribuir |
+| `IgnatG/terraform-reviewer/.../sarif_export.py` | padrão do SARIF 2.1.0 | **AGPL-3.0** 🔴 | **só referência conceitual** — não copiar/parafrasear; reimplementar do schema SARIF + docs GitHub |
+| `karim-bhalwani/agentic-harness/.../fragility-catalogue.md` | formato standalone + "Hardening" | **MIT** | adaptar + atribuir |
+| `stephenkiers/claude-helpers/expert-pre-mortem.md` | scan no `git diff`, assessment | **MIT** | adaptar + atribuir |
+| `boshu2/agentops/skills/pre-mortem/SKILL.md` | escada de veredito, no-self-grading, kill-criteria | **Apache-2.0** | adaptar + atribuir + NOTICE |
 | `.research/ORIGINAL-output-contract.md` (kit original; era `premortems-README.md`) | **CONTRATO DE SAÍDA** (frontmatter + findings) | nosso |
 
 ## Arquitetura proposta
