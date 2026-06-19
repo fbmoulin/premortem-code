@@ -1,6 +1,7 @@
 # Spec — Reconstrução da skill `premortem-code`
 
-Status: **AGUARDANDO APROVAÇÃO** (Fase 3 do dev-workflow). Sem implementação até aprovado.
+Status: **REVISADO E PRONTO PARA FASE 5** — plan-review-cycle 2 rounds, 21 findings, todos
+fechados, validador exit 0 (2026-06-19). Aguardando go do Felipe para execução.
 Data: 2026-06-19 · Autor: Felipe (via Claude) · Repo: `~/projetos-2026/premortem-code`
 
 ## Objetivo
@@ -65,12 +66,18 @@ dropped_findings_count
 
 **Veredito (autoral; definição OPERACIONAL — R1-PRC008).** Cada veredito tem um
 predicado mecânico que dois runs aplicam igual. Definições:
+- Eixo **Confidence** (R2-PRC001), enum fixo: `confirmed | likely | speculative`.
+  O `verification-protocol.md` (T2) traz um gate de atribuição de Confidence
+  (espelhando o de Severity): `confirmed` exige evidência citada `file:line` de que a
+  mitigação está ausente; `likely` = forte indício sem âncora exata; `speculative` =
+  plausível mas não verificado (tende a virar Dropped). T6 e T9 asseram o enum.
 - **structural** = o fix exige mudar design/interface pública/data-model/contrato
-  cross-módulo, OU toca >1 módulo. **local** = guard/validação adicionada no próprio
-  ponto do finding (1 função/arquivo).
-- `ABANDON` — uma **premissa declarada** da mudança é contradita por um finding
-  `confirmed`. Raro. Ex.: "esta migração é idempotente" mas há finding confirmado de
-  não-idempotência.
+  cross-módulo, OU toca >1 módulo. **local** = qualquer fix confinado a 1 função/arquivo
+  (R2-PRC002 — não só guard/validação). **Partição exaustiva:** todo `high` é structural
+  ou local; um `high` que não é structural é tratado como local → REFINE.
+- `ABANDON` — uma **premissa declarada** da mudança é contradita por um finding com
+  `Confidence: confirmed`. Raro. Ex.: "esta migração é idempotente" mas há finding
+  confirmado de não-idempotência.
 - `REWORK` — ≥1 finding `high` **structural** (pela definição acima). Não mergear.
 - `REFINE` — há findings mas todos os `high` são **local**, OU só `medium`/`low`.
   Mergear após ajustar.
@@ -102,17 +109,21 @@ Findings descartados vão para a seção "Dropped findings" (transparência).
 3. **T3** — `subagent-prompt.md` (prompt do subagente adversarial; framing "já falhou"). ~15min
 4. **T4** — `premortem-md-template.md` (contrato exato do README; força `file:line`). ~15min
 5. **T5** — 6× `stack-*.md` (cada: descrição, Extends Category N, padrões, verification Qs, common false positives). ~30min cada → agrupar em 1–2 commits
-6. **T6** — `scripts/sarif_export.py` (parse md → SARIF 2.1.0; pyyaml; valida `file:line`, warn+default). ~30min
+6. **T6** — `scripts/sarif_export.py` (parse md → SARIF 2.1.0; pyyaml; valida `file:line`,
+   warn+default). `message.text` = título do finding + 1ª linha do Failure narrative
+   (R2-PRC004, com teste de texto não-vazio). Label de parse casa o literal do contrato
+   `Mitigation verified absent` (R2-PRC005), alinhado ao T4. ~60min
 7. **T7** — `SKILL.md` (frontmatter+description otimizada; workflow; tabela detecção; veredito). ~30min
 8. **T8** — `README.md` + `LICENSE` + créditos de proveniência. ~15min
 9. **T9** — Validação E2E. (a) Instalar pelo método **canônico de skill**: `cp -r`
    da skill para `~/.claude/skills/premortem-code/` (R1-PRC001); adicionalmente,
    adicionar ao `install-premortem.sh` um **fallback flat** `$SOURCE_DIR/scripts/*.py`
    para o instalador seguir usável com layout flat; asserir inventário `SKILL.md +
-   10 assets + 1 script`. (b) **Eval funcional com fixture sintético** (R1-PRC009):
-   um diff com bug plantado conhecido (race check-then-act Python/Redis) que a skill
-   DEVE pegar, + orçamento de falso-positivo declarado — piso falsificável de
-   "equivalência de comportamento". (c) lint/parse YAML, validar SARIF (schema +
+   10 assets + 1 script`. (b) **Eval funcional com 2 fixtures sintéticos** (R1-PRC009 +
+   R2-PRC003): (b1) diff com bug plantado conhecido (race check-then-act Python/Redis)
+   que a skill DEVE pegar (recall); (b2) **fixture limpo** — diff correto sem fragilidade
+   real, onde **orçamento**: 0 findings `high` e ≤2 findings espúrios totais (precisão).
+   Os dois juntos são o piso falsificável de "equivalência de comportamento". (c) lint/parse YAML, validar SARIF (schema +
    campos do Code Scanning), conferir contrato. ~45min
 
 ## Dependências
@@ -198,6 +209,21 @@ Emendas ao spec/plan aprovadas no Lote A do plan-review-cycle (2026-06-19).
   conhecido que a skill DEVE pegar + orçamento de falso-positivo) como piso falsificável.
 - **R1-PRC010 (Major).** **T0 = hard-gate de licença** sobre todas as fontes, antes de
   T1/T6 (accept/reject por tipo de licença). Ver §Task decomposition e §Riscos.
+
+## Round 2 Resolutions (emendas aplicadas)
+
+Aprovadas em bloco no Round 2 do plan-review-cycle (2026-06-19, opção "Aprovo todas").
+
+- **R2-PRC001 — eixo Confidence.** Enum fixo `confirmed | likely | speculative` definido
+  no §Veredito; gate de atribuição no `verification-protocol.md` (T2); ABANDON exige
+  `Confidence: confirmed`; T6/T9 asseram o enum.
+- **R2-PRC002 — partição exaustiva.** `local` redefinido como "qualquer fix confinado a
+  1 função/arquivo"; default explícito: high não-structural → local → REFINE.
+- **R2-PRC003 — orçamento de FP.** T9(b) ganha 2º fixture (limpo) + números: 0 high e
+  ≤2 espúrios no fixture limpo (precisão), além do recall no fixture com bug.
+- **R2-PRC004 — message.text.** T6 fixa `message.text` = título + 1ª linha do narrative,
+  com teste de texto não-vazio.
+- **R2-PRC005 — label.** T6 casa o literal `Mitigation verified absent` (alinhado ao T4).
 
 ## Plan Review Log
 
@@ -689,6 +715,170 @@ plan_changes_made: |
 
 no_change_rationale: |
   Finding is a positive-evidence note confirming the SKILL.md body fits under 500 lines; there is no failure mode to fix. Budget pressure is the description char count, already addressed by R1-PRC007. Recorded and closed without plan change.
+
+human_approver: Felipe (fbmoulin)
+approval_status: Approved
+approval_date: 2026-06-19
+
+### Review Round 2
+
+reviewer_model: claude-opus-4-8
+reviewer_prompt: code-plan-reviewer@v0.4
+date: 2026-06-19
+spec_reviewed: .research/ORIGINAL-output-contract.md
+plan_reviewed: docs/superpowers/specs/premortem-code-reconstruction.md
+diverse_critics: false
+
+#### Findings
+
+##### Finding R2-PRC001: ABANDON keys on Confidence "confirmed", an axis no amendment pinned
+
+status: Resolved
+severity: Major
+location: Spec "Veredito" (ABANDON clause); R1-PRC002/R1-PRC008 resolutions; verification-protocol gates
+
+reviewer_concern: |
+  ABANDON fires when a declared premise is contradicted by a "confirmed" finding, but
+  "confirmed" is a Confidence value and Confidence is never enumerated anywhere (R1-PRC002
+  pinned only Severity to {high,medium,low}). No gate assigns Confidence.
+
+why_it_matters: |
+  R1-PRC008 declared the verdict rubric mechanical so two runs converge, yet ABANDON's
+  predicate rests on an unpinned value with no assignment rule. The two merge-blocking
+  verdicts key on different axes (REWORK on pinned severity, ABANDON on unpinned
+  confidence); a subagent can write any string, so ABANDON is non-reproducible — the
+  exact defect R1-PRC008 claimed to fix.
+
+decision: Resolved — Round 2 aprovado em bloco por Felipe.
+
+plan_changes_made: |
+  Enum Confidence {confirmed|likely|speculative}; gate no T2; ABANDON exige confirmed; T6/T9 asseram.
+  Propagação (ver "Round 2 Resolutions"):
+  - [x] §Veredito: eixo Confidence
+  - [x] T2: gate de atribuição
+  - [x] §Veredito: ABANDON usa Confidence: confirmed
+  - [x] T6/T9: asserir enum
+
+no_change_rationale: |
+
+human_approver: Felipe (fbmoulin)
+approval_status: Approved
+approval_date: 2026-06-19
+
+##### Finding R2-PRC002: structural/local is not exhaustive — a high can match neither
+
+status: Resolved
+severity: Major
+location: Spec "Veredito" (structural/local definitions)
+
+reviewer_concern: |
+  structural is broad, but local is narrow ("guard/validation added at the finding point,
+  1 function/file"). A high whose fix is a single-file change that is NOT a guard (reorder
+  statements, off-by-one, change a load-bearing default, add a context manager) matches
+  neither predicate.
+
+why_it_matters: |
+  REWORK keys on "≥1 high structural"; REFINE on "all highs local". An unclassifiable high
+  satisfies neither → no verdict, or each run improvises a class, reintroducing the
+  non-reproducibility R1-PRC008 closed. These are common catalog cases.
+
+decision: Resolved — Round 2 aprovado em bloco por Felipe.
+
+plan_changes_made: |
+  local = qualquer fix em 1 função/arquivo; partição exaustiva (high não-structural → local → REFINE).
+  Propagação (ver "Round 2 Resolutions"):
+  - [x] §Veredito: definição de local + default
+
+no_change_rationale: |
+
+human_approver: Felipe (fbmoulin)
+approval_status: Approved
+approval_date: 2026-06-19
+
+##### Finding R2-PRC003: T9 false-positive "budget" has no number and no negative corpus
+
+status: Resolved
+severity: Major
+location: Spec T9(b); R1-PRC009 resolution; Estratégia de testes
+
+reviewer_concern: |
+  T9(b) requires a "declared false-positive budget" but gives no threshold and no
+  clean/negative fixtures. The single planted-bug fixture tests recall only; a FP budget
+  can only be measured against correct diffs, of which none are specified.
+
+why_it_matters: |
+  R1-PRC009 made the fixture the falsifiable floor for behavior-equivalence; as scoped the
+  precision side is unmeasurable, so T9 can pass while emitting unlimited spurious findings.
+  Recall checked, precision unverifiable.
+
+decision: Resolved — Round 2 aprovado em bloco por Felipe.
+
+plan_changes_made: |
+  T9(b) ganha fixture limpo + orçamento (0 high, ≤2 espúrios) além do recall.
+  Propagação (ver "Round 2 Resolutions"):
+  - [x] §T9(b): 2º fixture + números
+  - [x] §Estratégia de testes: precisão
+
+no_change_rationale: |
+
+human_approver: Felipe (fbmoulin)
+approval_status: Approved
+approval_date: 2026-06-19
+
+##### Finding R2-PRC004: T6 never says which finding field becomes SARIF message.text
+
+status: Resolved
+severity: Minor
+location: Spec T6 / R1-PRC004 resolution; terraform-sarif.py (message.text = evidence)
+
+reviewer_concern: |
+  R1-PRC004 enumerated labels, location regex, ranges, and Dropped-exclusion, but never
+  said which markdown field maps to the required SARIF result.message.text. The contract has
+  title, Mitigation, and Failure narrative; the reference uses evidence with no obvious
+  counterpart.
+
+why_it_matters: |
+  message.text is required and renders as the PR annotation; with no mapping the implementer
+  guesses, and the R1-PRC006 tests (region/order/Dropped) don't check message content, so a
+  blank/wrong choice ships while tests pass.
+
+decision: Resolved — Round 2 aprovado em bloco por Felipe.
+
+plan_changes_made: |
+  message.text = título + 1ª linha do narrative; teste de texto não-vazio.
+  Propagação (ver "Round 2 Resolutions"):
+  - [x] §T6: mapping message.text + teste
+
+no_change_rationale: |
+
+human_approver: Felipe (fbmoulin)
+approval_status: Approved
+approval_date: 2026-06-19
+
+##### Finding R2-PRC005: Parse label "Mitigation" vs contract "Mitigation verified absent"
+
+status: Resolved
+severity: Minor
+location: Spec T6 / R1-PRC004 (label "Mitigation"); contract finding format ("Mitigation verified absent")
+
+reviewer_concern: |
+  R1-PRC004 lists the extraction label as "Mitigation", but the contract and spec line 61
+  write "Mitigation verified absent:". The parse label set doesn't match the literal output
+  label.
+
+why_it_matters: |
+  An exact-match regex on "Mitigation:" misses the field; prefix-match works by luck. This is
+  the label drift R1-PRC004 meant to eliminate, and the four T6 tests don't cover this field.
+
+decision: Resolved — Round 2 aprovado em bloco por Felipe.
+
+plan_changes_made: |
+  Label de parse = literal 'Mitigation verified absent', alinhado ao T4.
+  Propagação (ver "Round 2 Resolutions"):
+  - [x] §T6: label literal
+  - [x] T4: mesma redação no template
+
+no_change_rationale: |
 
 human_approver: Felipe (fbmoulin)
 approval_status: Approved
