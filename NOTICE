@@ -1,0 +1,15 @@
+premortem-code
+Copyright (c) 2026 Felipe Moulin
+
+This product includes concepts adapted from third-party works:
+
+- boshu2/agentops (Apache License 2.0): the verdict-ladder pattern, the
+  no-self-grading invariant, and the pre-registered decision-rule idea behind the
+  operational verdict rubric. No source code was copied; concepts were reimplemented.
+
+- honnibal/claude-skills, karim-bhalwani/agentic-harness, stephenkiers/claude-helpers
+  (all MIT): the fragility-catalogue concept, standalone reference format, and
+  git-diff scan workflow. Reworded in original prose.
+
+NOT used: IgnatG/terraform-reviewer is AGPL-3.0 and was treated as conceptual
+reference only; none of its code was copied or paraphrased. See CREDITS.md.
