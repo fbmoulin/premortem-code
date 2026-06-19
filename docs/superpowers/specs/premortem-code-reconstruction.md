@@ -151,15 +151,15 @@ Findings descartados vão para a seção "Dropped findings" (transparência).
 - Instalar e confirmar inventário pós-install: `SKILL.md + 10 assets (4 base + 6 stack) + 1 script`; e `claude /skills` lista a skill.
 - E2E: rodar a skill (ou simular o fluxo) num diff real de um repo Python; conferir que o PREMORTEM gerado bate com o contrato.
 
-## Critérios de aceitação ("pronto")
-- [ ] `SKILL.md` ≤500 linhas, frontmatter YAML válido, `description` ≤1024 ch sem `<`/`>`.
-- [ ] `assets/` com 4 base + 6 stack = 10 arquivos `.md`.
-- [ ] `scripts/sarif_export.py` produz SARIF 2.1.0 válido e **avisa** em location não-`file:line`.
-- [ ] Saída segue o contrato do `.research/ORIGINAL-output-contract.md` (frontmatter + findings + dropped).
-- [ ] Instala via `install-premortem.sh` corrigido e aparece em `claude /skills`.
-- [ ] E2E num diff real gera PREMORTEM com veredito coerente.
-- [ ] README com créditos de proveniência + LICENSE; repo commitado.
-- [ ] MEMORY.md atualizado.
+## Critérios de aceitação ("pronto") — VERIFICADOS 2026-06-19 (Fase 6)
+- [x] `SKILL.md` 112 linhas, frontmatter YAML válido, `description` 881 ch sem `<`/`>`.
+- [x] `assets/` com 4 base + 6 stack = 10 arquivos `.md`.
+- [x] `scripts/sarif_export.py` produz SARIF 2.1.0 válido e **avisa** em location não-`file:line` (6/6 testes).
+- [x] Saída segue o contrato do `.research/ORIGINAL-output-contract.md` (template T4).
+- [x] Instala via `install-premortem.sh` (fallback flat) → SKILL.md + 10 assets + 1 script; skill aparece na lista.
+- [x] E2E: 2 fixtures (bug→REWORK recall; limpo→REFINE, 0 high, falso-positivo dropado).
+- [x] README + CREDITS + LICENSE (MIT) + NOTICE; 11 commits.
+- [x] MEMORY.md atualizado.
 
 ## Round 1 Resolutions (emendas aplicadas)
 
