@@ -29,6 +29,7 @@ _LEVEL: dict[str, str] = {"high": "error", "medium": "warning", "low": "note"}
 # Severity -> a CVSS-style 0-10 number; Code Scanning sorts on `security-severity`.
 _SECURITY_SEVERITY: dict[str, str] = {"high": "8.0", "medium": "5.0", "low": "3.0"}
 _SEV_RANK: dict[str, int] = {"high": 0, "medium": 1, "low": 2}
+_CONFIDENCE = {"confirmed", "likely", "speculative"}
 
 _INFO_URI = "https://github.com/fbmoulin/premortem-code"
 _TOOL_VERSION = "1.0.0"
@@ -95,8 +96,16 @@ def parse_premortem(text: str) -> tuple[dict[str, Any], list[dict[str, Any]], li
         rec.update(file=file, start_line=start, end_line=end, location_valid=valid)
         narrative = _first_narrative_line(block)
         rec["message_text"] = f"{title} — {narrative}" if narrative else title
-        sev = rec.get("severity", "").lower()
+        # Severity normalization: a source-catalogue "critical" maps to high
+        # (the contract has only high/medium/low). Without this a "critical"
+        # finding would fall through to low — a severity inversion.
+        sev = rec.get("severity", "").strip().lower()
+        if sev == "critical":
+            sev = "high"
         rec["severity"] = sev if sev in _LEVEL else "low"
+        # Confidence normalization to the fixed enum (R2-PRC001).
+        conf = rec.get("confidence", "").strip().lower()
+        rec["confidence"] = conf if conf in _CONFIDENCE else "speculative"
         if not valid:
             print(
                 f"WARNING: finding '{title}' has a non-structured location "
@@ -150,7 +159,7 @@ def build_sarif(findings: list[dict[str, Any]]) -> dict[str, Any]:
             region["endLine"] = f["end_line"]
         props = {
             "security-severity": _SECURITY_SEVERITY[f["severity"]],
-            "confidence": f.get("confidence") or "unspecified",
+            "confidence": f["confidence"],  # normalized to the enum in parse
         }
         results.append(
             {

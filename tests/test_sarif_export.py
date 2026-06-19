@@ -120,6 +120,45 @@ def test_dropped_section_not_in_results():
     assert len(sarif["runs"][0]["results"]) == 2  # (d)
 
 
+_CRIT = """---
+verdict: REWORK
+risk_counts: {high: 1, medium: 0, low: 0}
+---
+
+## Detailed findings
+
+### Finding 1: Silent data loss on dedup
+
+**Category:** data_integrity
+**Severity:** critical
+**Confidence:** totally-sure
+**Location:** `src/dedup.py:10`
+**Mitigation verified absent:** none
+
+#### Failure narrative
+Rows were silently dropped.
+"""
+
+
+def test_critical_severity_maps_to_high_not_low():
+    # Regression: a "critical" finding must not invert to the quietest level.
+    _, findings, _ = sx.parse_premortem(_CRIT)
+    assert findings[0]["severity"] == "high"
+    sarif = sx.build_sarif(findings)
+    assert sarif["runs"][0]["results"][0]["level"] == "error"  # not "note"
+    assert sarif["runs"][0]["results"][0]["properties"]["security-severity"] == "8.0"
+
+
+def test_confidence_normalized_to_enum():
+    # An out-of-enum confidence ("totally-sure") falls back to speculative.
+    _, findings, _ = sx.parse_premortem(_CRIT)
+    assert findings[0]["confidence"] == "speculative"
+    sarif = sx.build_sarif(findings)
+    assert sarif["runs"][0]["results"][0]["properties"]["confidence"] in {
+        "confirmed", "likely", "speculative"
+    }
+
+
 if __name__ == "__main__":
     import traceback
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
