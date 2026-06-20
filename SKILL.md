@@ -8,8 +8,9 @@ description: 'Conduct an adversarial pre-mortem on a proposed code change: assum
   about to merge, ship, deploy, or release a PR, branch, or diff; asks "what could go wrong",
   "is this safe for production", "review the risks before merging", "premortem", or
   "pre-mortem"; or wants a risk assessment of code before it goes live, even when they do not
-  say "premortem" explicitly. Stack-aware for Python/FastAPI, Postgres, Redis/ARQ, Qdrant,
-  agents/MCP, and Docker/Kubernetes. Skip for typo/lint/formatting-only or pure-revert changes.'
+  say "premortem" explicitly. Stack-aware for Python/FastAPI, Postgres, Supabase, Redis/ARQ,
+  Qdrant, agents/MCP, Docker/Kubernetes, Vercel, frontend, n8n, Playwright, AWS CDK,
+  fine-tuning, and Anthropic skills. Skip for typo/lint/formatting-only or pure-revert changes.'
 license: MIT
 metadata:
   author: Felipe Moulin (fbmoulin)
@@ -60,6 +61,14 @@ stacks fall back to the core catalogue per step 2.)
 | `qdrant_client` or `@qdrant/js-client-rest` | `stack-qdrant.md` |
 | `anthropic`/`@anthropic-ai/sdk`/`openai`, or MCP server/client/tool files | `stack-agents-mcp.md` |
 | `Dockerfile`, `docker-compose.y*ml`, `k8s/`, or K8s YAML kinds | `stack-docker-k8s.md` |
+| `@supabase/supabase-js`/`@supabase/ssr`, `supabase/` dir, RLS policies, `SUPABASE_*` env | `stack-supabase.md` |
+| `vercel.json`, `next.config.*`, `@vercel/*`, edge/serverless runtime exports | `stack-vercel.md` |
+| `react`/`next`/`vue`/`vite`, or significant `.jsx`/`.tsx`/`.vue` | `stack-frontend.md` |
+| `@playwright/test`, `playwright.config.*`, or `*.spec.ts`/`*.e2e.ts` | `stack-playwright.md` |
+| `n8n`/`n8n-nodes-*`, `.workflow.json`, or `n8n-nodes-base.*` node types | `stack-n8n.md` |
+| `aws-cdk-lib`/`@aws-cdk/*`, `cdk.json`, or `*.cdk.ts`/`*.cdk.py` | `stack-aws-cdk.md` |
+| `SKILL.md`/skill dir structure with bundled `assets/`/`scripts/`/`references/` | `stack-anthropic-skills.md` |
+| `peft`/`trl`/`bitsandbytes`/`tinker`, or LoRA/SFT training scripts | `stack-finetuning.md` |
 
 ## Modes
 

@@ -43,8 +43,10 @@ python ~/.claude/skills/premortem-code/scripts/sarif_export.py \
 ## What it covers
 
 The 10-category universal **fragility catalogue** (`assets/fragility-catalog-core.md`)
-plus stack-specific addenda for **Python/FastAPI, Postgres, Redis/ARQ, Qdrant,
-agents/MCP, Docker/Kubernetes**. Other stacks fall back to the core catalogue. A
+plus stack-specific addenda for **Python/FastAPI, Postgres, Supabase, Redis/ARQ, Qdrant,
+agents/MCP, Docker/Kubernetes, Vercel, frontend (React/Next/Vue/Vite), n8n, Playwright,
+AWS CDK, fine-tuning, and Anthropic skills** (14 stacks). Other stacks fall back to the
+core catalogue. A
 **verification protocol** (`assets/verification-protocol.md`) drops false positives, and
 the verdict rubric is operational (mechanical structural-vs-local + Confidence axes) so
 two runs converge.
@@ -59,7 +61,8 @@ premortem-code/
 │   ├── verification-protocol.md
 │   ├── subagent-prompt.md
 │   ├── premortem-md-template.md
-│   └── stack-{python-fastapi,postgres,redis-arq,qdrant,agents-mcp,docker-k8s}.md
+│   └── stack-{python-fastapi,postgres,supabase,redis-arq,qdrant,agents-mcp,
+│       docker-k8s,vercel,frontend,playwright,n8n,aws-cdk,anthropic-skills,finetuning}.md
 ├── scripts/sarif_export.py      # PREMORTEM .md -> SARIF 2.1.0
 ├── tests/test_sarif_export.py
 ├── CREDITS.md  NOTICE  LICENSE
@@ -69,9 +72,8 @@ premortem-code/
 ## Notes
 
 - Requires Python ≥ 3.10 and `pyyaml` (exporter only).
-- Stack counts here (6 stacks / 10 assets) are this reconstruction's scope; the original
-  deployment kit's TUTORIAL describes a 14-stack version — those counts refer to the
-  original, not this repo.
+- Ships 14 stacks / 18 assets (4 base + 14 stack), matching the original deployment kit's
+  coverage. Stacks not in the table fall back to the core fragility catalogue.
 - The skill was built and reviewed with the `dev-workflow` + `plan-review-cycle` skills;
   the full Plan Review Log (2 rounds, 21 findings) lives in
   `docs/superpowers/specs/premortem-code-reconstruction.md`.
