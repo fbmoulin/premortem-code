@@ -26,3 +26,24 @@ Limitations (honest scope):
 
 This is the falsifiable *floor* for behaviour-equivalence (R1-PRC009 / R2-PRC003), not a
 proof of equivalence.
+
+## Baseline comparison (with vs without skill, 2026-06-19)
+
+Two more subagents reviewed the same fixtures with NO skill (plain senior-engineer PR
+review) to measure the skill's value-add (delta).
+
+| Config | bug fixture | clean fixture | Distinguishes bug from correct? |
+|---|---|---|---|
+| baseline (no skill) | No-go, 2 high | **No-go, 2 high** | **No** — both No-go |
+| with skill | REWORK, 1 high | **REFINE, 0 high** | **Yes** |
+
+**The measured value-add is calibration, not detection.** Both configs catch the obvious
+`get`/`set` race in the bug fixture. The difference is on the *correct* fixture: the
+unaided baseline escalated it to No-go with two `high` findings (it flagged the atomic
+INCR/DECR as an over-booking race and the rollback as high), while the skill's
+verification protocol dropped the over-booking race as a false positive and returned
+REFINE / 0 high. So the baseline could **not** tell the buggy file from the correct one;
+the skill could. For a CI gate that blocks on REWORK/ABANDON, that precision is the whole
+point — without it, correct PRs get blocked as often as broken ones.
+
+Caveat: n=2 fixtures, single run each; indicative, not statistically robust.
