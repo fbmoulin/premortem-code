@@ -49,13 +49,18 @@ flowchart LR
 
 ## 🚀 Quick start
 
-**Install as a Claude Code plugin** (recommended):
+**Install as a Claude Code plugin** (recommended). Run each line separately:
 
 ```text
-/plugin marketplace add fbmoulin/premortem-code
+/plugin marketplace add https://github.com/fbmoulin/premortem-code.git
 /plugin install premortem-code@premortem-code
 /reload-plugins   # activate it in the current session
 ```
+
+> **Tip:** use the full **HTTPS** URL (above). The `owner/repo` shorthand resolves to
+> SSH (`git@github.com`) and fails with *"Permission denied (publickey)"* on machines
+> without SSH keys. Run the three commands one at a time — pasting them as a block makes
+> the first command swallow the others as one malformed URL.
 
 <details>
 <summary>Or install manually as a skill</summary>
