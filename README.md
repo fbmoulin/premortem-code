@@ -10,7 +10,7 @@ on a proposed code change, surfacing the fragilities that *pass tests but bite l
 
 <br/>
 
-[![Version 2.0.0](https://img.shields.io/badge/version-2.0.0-d97757.svg?style=flat-square)](SKILL.md)
+[![Version 2.1.0](https://img.shields.io/badge/version-2.1.0-d97757.svg?style=flat-square)](SKILL.md)
 [![CI](https://github.com/fbmoulin/premortem-code/actions/workflows/ci.yml/badge.svg)](https://github.com/fbmoulin/premortem-code/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg?style=flat-square)](LICENSE)
 [![Python ≥3.10](https://img.shields.io/badge/Python-%E2%89%A53.10-3776ab.svg?style=flat-square&logo=python&logoColor=white)](#-requirements)
@@ -87,6 +87,11 @@ Roda um premortem-code standard nas mudanças desta PR.
 ```
 
 …or *"what could go wrong with this change?"*, *"is this safe for production?"*, *"premortem this diff"*.
+
+**Also works on plans/specs** (not just code) — *"pre-mortem this spec before we build it"*. It assumes the
+plan already failed in execution and surfaces the flaws (non-falsifiable acceptance criteria, undeclared
+premises, missing rollback/idempotency, task-ordering gaps…) via
+[`assets/plan-failure-catalog.md`](assets/plan-failure-catalog.md), with the same verdict.
 
 ## 🎚️ Modes
 
@@ -191,6 +196,7 @@ premortem-code/
 ├── SKILL.md                     # router: workflow · stack table · verdict rubric · mode selection
 ├── assets/
 │   ├── fragility-catalog-core.md      # the 10 universal categories (+ TOC)
+│   ├── plan-failure-catalog.md        # the 10 plan/spec failure modes
 │   ├── verification-protocol.md       # anti-false-positive gates
 │   ├── subagent-prompt.md             # adversarial sub-agent template
 │   ├── premortem-md-template.md       # exact output contract
@@ -208,7 +214,7 @@ premortem-code/
 ## 🔧 Requirements
 
 - **Python ≥ 3.10** and **`pyyaml`** — only for the SARIF exporter; the skill itself needs neither.
-- Ships **14 stacks / 19 assets** (5 base + 14 stack), including the effort-classification reference.
+- Ships **14 stacks / 20 assets** (6 base + 14 stack), including the effort-classification and plan-failure references.
 
 <details>
 <summary>📐 How it was built</summary>

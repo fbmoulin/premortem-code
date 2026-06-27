@@ -50,6 +50,16 @@ the findings and the dropped list; do not add preamble or sign-off.
 
 ---
 
+## Plan/spec mode (`scope: plan`)
+
+When the target is a plan/spec document, the orchestrator overrides the slots above:
+- **Inputs** = the plan/spec doc (not a diff); `addenda_loaded: [plan-failure-catalog.md]`, no stack addenda.
+- **Framing** = "assume a competent executor followed this plan and it STILL failed; find the step that allowed it."
+- **Method step 1** = read the whole plan; **step 2** hunts the 10 categories in `plan-failure-catalog.md`
+  (not `fragility-catalog-core.md`/`stack-*.md`); evidence = quote the plan text.
+- **Output Location** = `file:§section` (e.g. `plan.md:§T3`); everything else (verification protocol,
+  severity/confidence, template) is unchanged.
+
 The "already failed, work backward" framing and the multi-lens sub-agent shape are
 conceptually adapted (MIT) from honnibal/claude-skills and the adversarial-premortem
 pattern; see `CREDITS.md`.

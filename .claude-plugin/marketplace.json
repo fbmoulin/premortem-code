@@ -9,7 +9,7 @@
       "name": "premortem-code",
       "source": "./",
       "description": "Adversarial pre-mortem on a code change with a GO/REFINE/REWORK/ABANDON verdict and optional SARIF export. Stack-aware for 14 stacks.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": {
         "name": "Felipe Moulin"
       },

@@ -4,17 +4,18 @@ description: 'Conducts an adversarial pre-mortem on a proposed code change: assu
   already failed in production and enumerates the concrete, location-pinned ways it breaks
   (concurrency, data integrity, partial rollout, contract/type drift, migrations), drops
   false positives via a verification protocol, and issues a GO/REFINE/REWORK/ABANDON
-  verdict with optional SARIF export for GitHub Code Scanning. Use this whenever the user is
+  verdict with optional SARIF export. Use this whenever the user is
   about to merge, ship, deploy, or release a PR, branch, or diff; asks "what could go wrong",
   "is this safe for production", "review the risks before merging", "premortem", or
   "pre-mortem"; or wants a risk assessment of code before it goes live, even when they do not
-  say "premortem" explicitly. Stack-aware for Python/FastAPI, Postgres, Supabase, Redis/ARQ,
+  say "premortem". It also pre-mortems a plan or spec before execution. Stack-aware for
+  Python/FastAPI, Postgres, Supabase, Redis/ARQ,
   Qdrant, agents/MCP, Docker/Kubernetes, Vercel, frontend, n8n, Playwright, AWS CDK,
   fine-tuning, and Anthropic skills. Skip for typo/lint/formatting-only or pure-revert changes.'
 license: MIT
 metadata:
   author: Felipe Moulin (fbmoulin)
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # premortem-code
@@ -86,6 +87,25 @@ auth/RLS, concurrency, infra) or wide/multi-module changes → `deep`; small loc
 `scripts/classify_effort.py` (`git diff | python scripts/classify_effort.py`) for a
 deterministic, advisory recommendation. The choice is a default; the user can override.
 
+## Pre-mortem of a plan or spec
+
+When the target is a **plan or spec document** (markdown) instead of a code change — e.g. the user
+asks to "pre-mortem this spec", "validate this plan before we build it", or "what could go wrong with
+this plan" — run the same adversarial process with three swaps:
+
+1. **Catalogue.** Hunt the 10 categories in `assets/plan-failure-catalog.md` *instead of*
+   `fragility-catalog-core.md` + stack addenda. Skip stack detection (step 2 of the workflow).
+2. **Anchor.** `Location` becomes `file:§section` (e.g. `plan.md:§T3`), not `file:line`. SARIF export
+   does not apply (no line anchors); the markdown report is the deliverable.
+3. **Framing.** Assume a competent executor followed the plan and it **still failed**; find the step
+   that allowed it. Everything else is unchanged: the verification protocol, the modes, the verdict
+   rubric, and the output template (set `scope: plan`, `stack_detected: []`,
+   `addenda_loaded: [plan-failure-catalog.md]`).
+
+The verdict reads the same: `ABANDON` = a declared goal/premise is contradicted by a `confirmed`
+finding; `REWORK` = ≥1 `high` flaw needing a cross-task replan; `REFINE` = every `high` is local to one
+task; `GO` = only `low`/follow-up.
+
 ## Verdict (operational — runs must converge)
 
 Severity is `high|medium|low` (no "critical"; a source "critical" maps to `high`).
@@ -116,6 +136,7 @@ Failure narrative, optional Hardening), then `## Dropped findings`.
 ## Bundled files
 
 - `assets/fragility-catalog-core.md` — the 10 universal categories; **always** the baseline.
+- `assets/plan-failure-catalog.md` — the 10 plan/spec failure modes; load for plan/spec pre-mortems.
 - `assets/stack-*.md` — per-stack patterns; load per the detection table.
 - `assets/subagent-prompt.md` — the adversarial sub-agent template; read when spawning.
 - `assets/verification-protocol.md` — the anti-false-positive gates; read before reporting.

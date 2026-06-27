@@ -10,18 +10,19 @@ Anything the protocol discards goes in the "Dropped findings" section for transp
 
 | # | Gate | Pass condition (objective) |
 |---|---|---|
-| 1 | **Anchor** | You read the whole enclosing symbol/module, not just the diff hunk, and can state `file:start-end`. |
-| 2 | **Evidence** | The mitigation that *should* exist is provably absent: a `file:line` citation, pasted tool output, or an explicit "0 matches" after a repo search — not "I looked". |
+| 1 | **Anchor** | You read the whole enclosing symbol/module, not just the diff hunk, and can state `file:start-end`. (Plan/spec mode: read the whole plan and cite `file:§section`.) |
+| 2 | **Evidence** | The mitigation that *should* exist is provably absent: a `file:line` citation, pasted tool output, or an explicit "0 matches" after a repo search — not "I looked". (Plan/spec mode: quote the exact plan text — the missing, contradictory, or unverifiable line, or "no task covers X".) |
 | 3 | **Severity** | Assigned per the scale in `fragility-catalog-core.md` (high/medium/low), honestly. |
 | 4 | **Confidence** | Assigned per the rule below (`confirmed`/`likely`/`speculative`). |
-| 5 | **Format** | The finding has Category, Severity, Confidence, `Location` as `file:line` (or `file:start-end`), `Mitigation verified absent`, and a Failure narrative. |
+| 5 | **Format** | The finding has Category, Severity, Confidence, `Location` as `file:line`/`file:start-end` (or `file:§section` in plan/spec mode), `Mitigation verified absent`, and a Failure narrative. |
 
 If gate 1 or 2 fails → the finding is `speculative` at best; usually Drop it.
 
 ## Confidence assignment (gate 4 — R2-PRC001)
 
-- `confirmed` — gate 2 passed with a concrete `file:line` showing the guard is absent.
-  Only `confirmed` findings can drive an `ABANDON` verdict.
+- `confirmed` — gate 2 passed with a concrete `file:line` (or `file:§section` in plan/spec
+  mode) showing the guard/step is absent or contradicted. Only `confirmed` findings can
+  drive an `ABANDON` verdict.
 - `likely` — strong indication, but no exact anchor (e.g. the pattern is present but
   you could not pin the precise missing line).
 - `speculative` — plausible but unverified. Default to **Dropped** unless it is a
