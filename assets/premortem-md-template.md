@@ -9,6 +9,9 @@ prose location ("section 5") is invalid: the SARIF exporter warns and defaults i
 line 1, losing the clickable anchor. Severity is `high|medium|low`; Confidence is
 `confirmed|likely|speculative`.
 
+For a **plan/spec pre-mortem** (`scope: plan`), `Location` is `file:§section` (e.g.
+`plan.md:§T3`) and SARIF export does not apply — the markdown report is the deliverable.
+
 ---
 
 ```markdown
@@ -17,7 +20,7 @@ generated: <ISO8601 UTC, e.g. 2026-06-19T14:30:00Z>
 skill: premortem-code
 mode: <quick|standard|deep>
 target: <pr/branch/commit/working-tree identifier>
-scope: <pr|branch|commit|working-tree>
+scope: <pr|branch|commit|working-tree|plan>
 stack_detected: [<e.g. python-fastapi, postgres>]
 addenda_loaded: [<e.g. stack-python-fastapi.md, stack-postgres.md>]
 verdict: <GO|REFINE|REWORK|ABANDON>

@@ -64,3 +64,8 @@ are **not** automated in CI.
 | agents-mcp | `clean.py` (handler and schema agree on `user_id`) | 0 `high` |
 | docker-k8s | `bug.yaml` (`image: …:latest`, no probe/limits) | ≥1 `high` (load-bearing default / mutable tag; cat 8/10) |
 | docker-k8s | `clean.yaml` (digest-pinned image + readiness probe + limits) | 0 `high` |
+| plan | `plan/bug.md` (additive backfill, "should be fast", ship-together) | ≥1 `high` (missing rollback/idempotency; plan cat 4) + non-falsifiable criterion (cat 1) |
+| plan | `plan/clean.md` (idempotent backfill + measurable acceptance + per-task verify) | 0 `high` |
+
+The `plan/` pair exercises the **plan/spec pre-mortem mode** (`scope: plan`, `plan-failure-catalog.md`),
+anchored on `file:§section` rather than `file:line`.
