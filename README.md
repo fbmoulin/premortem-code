@@ -11,6 +11,7 @@ on a proposed code change, surfacing the fragilities that *pass tests but bite l
 <br/>
 
 [![Version 1.2.0](https://img.shields.io/badge/version-1.2.0-d97757.svg?style=flat-square)](SKILL.md)
+[![CI](https://github.com/fbmoulin/premortem-code/actions/workflows/ci.yml/badge.svg)](https://github.com/fbmoulin/premortem-code/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg?style=flat-square)](LICENSE)
 [![Python ≥3.10](https://img.shields.io/badge/Python-%E2%89%A53.10-3776ab.svg?style=flat-square&logo=python&logoColor=white)](#-requirements)
 [![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-d97757.svg?style=flat-square)](https://code.claude.com/docs/en/skills)
@@ -99,6 +100,34 @@ python ~/.claude/skills/premortem-code/scripts/sarif_export.py \
   --input .premortems/PREMORTEM-<ISO8601>.md
 # → writes the sibling .sarif.json (SARIF 2.1.0)
 ```
+
+<details>
+<summary>Optional: upload to GitHub Code Scanning in CI</summary>
+
+<br/>
+
+Add a least-privilege job (only this job needs write scope). Pin the action by SHA and let
+Dependabot keep it current:
+
+```yaml
+upload-sarif:
+  runs-on: ubuntu-latest
+  permissions:
+    security-events: write   # required to upload to Code Scanning
+    contents: read           # required for private repos
+  steps:
+    - uses: actions/checkout@<sha>            # v7.x
+    - name: Generate PREMORTEM .sarif.json    # e.g. via your premortem step, then:
+      run: python scripts/sarif_export.py --input .premortems/PREMORTEM-<ISO8601>.md
+    - uses: github/codeql-action/upload-sarif@<sha>   # v4 (v3 deprecates Dec 2026)
+      with:
+        sarif_file: .premortems/PREMORTEM-<ISO8601>.sarif.json
+```
+
+This repo's own CI (`.github/workflows/ci.yml`) runs only `pytest` + `shellcheck` and grants
+**no** write scopes; SARIF upload is opt-in for consumers who want findings in Code Scanning.
+
+</details>
 
 ## 🧰 Coverage
 
