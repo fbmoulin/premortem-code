@@ -83,7 +83,8 @@ Roda um premortem-code standard nas mudanças desta PR.
 [`assets/effort-classification.md`](assets/effort-classification.md), or run the advisory classifier:
 
 ```bash
-git diff | python scripts/classify_effort.py   # → {"recommended_mode": "deep", "signals": [...], ...}
+git diff | python ~/.claude/skills/premortem-code/scripts/classify_effort.py
+# → {"recommended_mode": "deep", "signals": [...], ...}
 ```
 
 It rounds **up**: sensitive surfaces (migrations, auth, concurrency, infra) go to `deep`; small local
