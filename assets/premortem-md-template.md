@@ -38,7 +38,7 @@ dropped_findings_count: <int>
 **Category:** <one of the 10 catalogue categories, or a stack-extended one>
 **Severity:** <high|medium|low>
 **Confidence:** <confirmed|likely|speculative>
-**Location:** `<file>:<line>` or `<file>:<start>-<end>`
+**Location:** `<file>:<line>` or `<file>:<start>-<end>` (plan/spec mode: `<file>:§<section>`)
 **Mitigation verified absent:** <the guard/validation/lock that should exist and the
 cited evidence it does not — e.g. "no lock around the check-then-act at
 worker.py:142-150; grep for 'Lock(' in worker.py → 0 matches">

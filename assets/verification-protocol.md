@@ -11,7 +11,7 @@ Anything the protocol discards goes in the "Dropped findings" section for transp
 | # | Gate | Pass condition (objective) |
 |---|---|---|
 | 1 | **Anchor** | You read the whole enclosing symbol/module, not just the diff hunk, and can state `file:start-end`. (Plan/spec mode: read the whole plan and cite `file:§section`.) |
-| 2 | **Evidence** | The mitigation that *should* exist is provably absent: a `file:line` citation, pasted tool output, or an explicit "0 matches" after a repo search — not "I looked". |
+| 2 | **Evidence** | The mitigation that *should* exist is provably absent: a `file:line` citation, pasted tool output, or an explicit "0 matches" after a repo search — not "I looked". (Plan/spec mode: quote the exact plan text — the missing, contradictory, or unverifiable line, or "no task covers X".) |
 | 3 | **Severity** | Assigned per the scale in `fragility-catalog-core.md` (high/medium/low), honestly. |
 | 4 | **Confidence** | Assigned per the rule below (`confirmed`/`likely`/`speculative`). |
 | 5 | **Format** | The finding has Category, Severity, Confidence, `Location` as `file:line` (or `file:start-end`), `Mitigation verified absent`, and a Failure narrative. |

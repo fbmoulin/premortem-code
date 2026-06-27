@@ -99,7 +99,8 @@ this plan" — run the same adversarial process with three swaps:
    does not apply (no line anchors); the markdown report is the deliverable.
 3. **Framing.** Assume a competent executor followed the plan and it **still failed**; find the step
    that allowed it. Everything else is unchanged: the verification protocol, the modes, the verdict
-   rubric, and the output template (set `scope: plan`, `addenda_loaded: [plan-failure-catalog.md]`).
+   rubric, and the output template (set `scope: plan`, `stack_detected: []`,
+   `addenda_loaded: [plan-failure-catalog.md]`).
 
 The verdict reads the same: `ABANDON` = a declared goal/premise is contradicted by a `confirmed`
 finding; `REWORK` = ≥1 `high` flaw needing a cross-task replan; `REFINE` = every `high` is local to one
