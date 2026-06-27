@@ -54,6 +54,7 @@ flowchart LR
 ```text
 /plugin marketplace add fbmoulin/premortem-code
 /plugin install premortem-code@premortem-code
+/reload-plugins   # activate it in the current session
 ```
 
 <details>
@@ -67,7 +68,7 @@ cp -r premortem-code ~/.claude/skills/premortem-code
 # project scope (commit it so the whole team gets it)
 cp -r premortem-code <repo>/.claude/skills/
 # verify
-ls ~/.claude/skills/premortem-code      # → SKILL.md  assets/  scripts/
+ls -A ~/.claude/skills/premortem-code   # → .claude-plugin/  SKILL.md  assets/  scripts/
 ```
 
 </details>
