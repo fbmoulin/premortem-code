@@ -32,7 +32,7 @@ _SEV_RANK: dict[str, int] = {"high": 0, "medium": 1, "low": 2}
 _CONFIDENCE = {"confirmed", "likely", "speculative"}
 
 _INFO_URI = "https://github.com/fbmoulin/premortem-code"
-_TOOL_VERSION = "1.2.0"
+_TOOL_VERSION = "2.0.0"
 
 _LOCATION_RE = re.compile(r"^(.+):(\d+)(?:-(\d+))?$")
 _FIELD_RE = {
