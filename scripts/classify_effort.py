@@ -32,10 +32,12 @@ _PATH_SIGNALS = {
         re.I,
     ),
 }
+# Leading `(?<![a-z])` (not `\b`) so snake_case/plurals match: `check_permission`,
+# `permissions`, `authorize` all hit, while `block`/`deadlock` (letter before) do not.
 _CONTENT_SIGNALS = {
-    "auth": re.compile(r"\b(auth|rls|policy|permission|login|password|token|jwt|oauth)\b", re.I),
+    "auth": re.compile(r"(?<![a-z])(auth|rls|policy|permission|login|password|token|jwt|oauth)", re.I),
     "concurrency": re.compile(
-        r"\b(lock|mutex|semaphore|threading|asyncio|atomic|incr|decr|transaction|for\s+update|race)\b",
+        r"(?<![a-z])(lock|mutex|semaphore|threading|asyncio|atomic|incr|decr|transaction|race|for\s+update)",
         re.I,
     ),
 }
@@ -48,13 +50,15 @@ _BIG_LOC = 400    # large enough that multi-lens deep review pays off
 
 
 def _parse_diff(text: str):
-    """Return (changed_files, added_lines, removed_lines, content_added)."""
+    """Return (changed_files, added_lines, removed_lines, content_added, content_removed)."""
     files: set[str] = set()
     added = removed = 0
     content_added: list[str] = []
+    content_removed: list[str] = []
     for line in text.splitlines():
         if line.startswith("+++ ") or line.startswith("--- "):
-            m = re.match(r"^[+-]{3} [ab]/(.+)$", line)
+            # Stop at a tab: plain `diff -u` headers append `\t<timestamp>`.
+            m = re.match(r"^[+-]{3} [ab]/([^\t\n]+)", line)
             if m and m.group(1) != "/dev/null":
                 files.add(m.group(1))
             continue
@@ -68,13 +72,16 @@ def _parse_diff(text: str):
             content_added.append(line[1:])
         elif line.startswith("-"):
             removed += 1
-    return files, added, removed, content_added
+            content_removed.append(line[1:])
+    return files, added, removed, content_added, content_removed
 
 
 def classify(diff_text: str) -> dict:
-    files, added, removed, content_added = _parse_diff(diff_text)
+    files, added, removed, content_added, content_removed = _parse_diff(diff_text)
     loc = added + removed
-    content = "\n".join(content_added)
+    # Scan added AND removed lines: deleting a guard (a lock, a permission check)
+    # is a sensitive change too, and must not slip below `deep`.
+    content = "\n".join(content_added + content_removed)
 
     signals = []
     for name, rx in _PATH_SIGNALS.items():
@@ -86,7 +93,9 @@ def classify(diff_text: str) -> dict:
     signals = sorted(set(signals))
 
     # Top-level path segment ~ "module"; distinct count approximates blast radius.
-    modules = {f.split("/")[0] for f in files}
+    # Root-level files collapse to one bucket so editing several of them does not
+    # masquerade as a multi-module change.
+    modules = {f.split("/")[0] if "/" in f else "" for f in files}
     doc_or_test_only = bool(files) and all(_DOCY.search(f) or _TESTY.search(f) for f in files)
 
     if signals:
@@ -126,6 +135,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Recommend a premortem-code mode for a diff.")
     ap.add_argument("--diff", help="path to a unified diff (default: read stdin)")
     args = ap.parse_args(argv)
+    if not args.diff and sys.stdin.isatty():
+        # No piped diff and no --diff: don't block forever waiting on stdin.
+        ap.print_help()
+        return 1
     text = Path(args.diff).read_text(encoding="utf-8") if args.diff else sys.stdin.read()
     print(json.dumps(classify(text), indent=2))
     return 0

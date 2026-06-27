@@ -50,19 +50,65 @@ def test_multi_module_nontrivial_is_at_least_standard():
     assert mode != "quick"
 
 
-def test_main_emits_json(capsys):
-    rc = ce.main(["--diff", str(_write_tmp())])
+def test_removed_sensitive_guard_forces_deep():
+    # Deleting a lock (or any sensitive guard) must be caught even though it is a
+    # removal, not an addition — it must not slip below `deep`.
+    diff = (
+        "diff --git a/worker.py b/worker.py\n--- a/worker.py\n+++ b/worker.py\n"
+        "@@ -1,2 +1 @@\n-    with lock:\n-        counter += 1\n+    counter += 1\n"
+    )
+    out = ce.classify(diff)
+    assert "concurrency" in out["signals"]
+    assert out["recommended_mode"] == "deep"
+
+
+def test_removed_permission_check_in_snake_case_forces_deep():
+    # `check_permission` (snake_case) must trigger even on removal.
+    diff = (
+        "diff --git a/view.py b/view.py\n--- a/view.py\n+++ b/view.py\n"
+        "@@ -1 +0,0 @@\n-    check_permission(user)\n"
+    )
+    out = ce.classify(diff)
+    assert "auth" in out["signals"]
+    assert out["recommended_mode"] == "deep"
+
+
+def test_block_keyword_does_not_false_trigger_concurrency():
+    # `blocked`/`block` (letter before 'lock') must NOT be read as a lock.
+    diff = _diff("src/ui.py") + "@@ x @@\n+    render_blocked_state()\n"
+    out = ce.classify(diff)
+    assert "concurrency" not in out["signals"]
+
+
+def test_diff_header_with_timestamp_is_parsed():
+    # Plain `diff -u` appends a tab + timestamp after the path; it must not leak
+    # into the captured filename (which would break signal detection).
+    diff = (
+        "--- a/db/migrations/x.sql\t2026-06-27 12:00:00\n"
+        "+++ b/db/migrations/x.sql\t2026-06-27 12:00:01\n"
+        "@@ -1 +1 @@\n+UPDATE t SET x = x + 1;\n"
+    )
+    out = ce.classify(diff)
+    assert out["stats"]["files"] == 1
+    assert "migration" in out["signals"]
+    assert out["recommended_mode"] == "deep"
+
+
+def test_root_files_do_not_inflate_to_deep():
+    # Three root-level, non-sensitive code files must not masquerade as 3 modules.
+    diff = _diff("a.py", 5) + _diff("b.py", 5) + _diff("c.py", 5)
+    out = ce.classify(diff)
+    assert out["stats"]["modules"] == [""]  # collapsed to one bucket
+    assert out["recommended_mode"] != "deep"
+
+
+def test_main_emits_json(tmp_path, capsys):
+    p = tmp_path / "changes.patch"
+    p.write_text(_diff("README.md"), encoding="utf-8")
+    rc = ce.main(["--diff", str(p)])
     assert rc == 0
     out = capsys.readouterr().out
     assert '"recommended_mode"' in out
-
-
-def _write_tmp() -> Path:
-    import tempfile
-
-    p = Path(tempfile.mkstemp(suffix=".patch")[1])
-    p.write_text(_diff("README.md"), encoding="utf-8")
-    return p
 
 
 if __name__ == "__main__":
