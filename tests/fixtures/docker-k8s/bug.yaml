@@ -7,7 +7,13 @@ metadata:
   name: api
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      app: api
   template:
+    metadata:
+      labels:
+        app: api
     spec:
       containers:
         - name: api

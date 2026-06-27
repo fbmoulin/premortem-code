@@ -39,10 +39,12 @@ def test_cli_writes_sarif_file(tmp_path):
 
 
 def test_cli_output_validates_against_oasis_schema(tmp_path):
-    """The emitted SARIF validates against the official OASIS 2.1.0 schema (draft-04)."""
-    import pytest
+    """The emitted SARIF validates against the official OASIS 2.1.0 schema (draft-04).
 
-    jsonschema = pytest.importorskip("jsonschema")
+    jsonschema is a declared dev dependency (requirements-dev.txt), so import it
+    directly — a missing dep should fail loudly here, not silently skip the check.
+    """
+    import jsonschema
     _, out = _run(tmp_path)
     sarif = json.loads(out.read_text(encoding="utf-8"))
     schema = json.loads(_SCHEMA_PATH.read_text(encoding="utf-8"))

@@ -8,6 +8,11 @@ INPUT_SCHEMA = {
 }
 
 
+def db_lookup_orders(uid: str) -> list:
+    # Stub so the fixture is self-contained; the eval is about the key drift below.
+    return []
+
+
 def handle(args: dict) -> list:
     # Drift: the handler reads `userId`, but the schema advertises `user_id`.
     # The producer (model, guided by the schema) and consumer disagree on the key.

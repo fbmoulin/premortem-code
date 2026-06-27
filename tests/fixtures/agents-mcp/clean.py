@@ -8,6 +8,11 @@ INPUT_SCHEMA = {
 }
 
 
+def db_lookup_orders(uid: str) -> list:
+    # Stub so the fixture is self-contained; the eval is about the key agreement below.
+    return []
+
+
 def handle(args: dict) -> list:
     # Handler reads the same key the schema declares — producer and consumer agree.
     uid = args["user_id"]

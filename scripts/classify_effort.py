@@ -77,6 +77,7 @@ def _parse_diff(text: str):
 
 
 def classify(diff_text: str) -> dict:
+    """Classify a unified diff into a recommended mode with its signals and stats."""
     files, added, removed, content_added, content_removed = _parse_diff(diff_text)
     loc = added + removed
     # Scan added AND removed lines: deleting a guard (a lock, a permission check)
@@ -132,6 +133,7 @@ def classify(diff_text: str) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """CLI: read a diff (stdin or --diff) and print the recommendation as JSON."""
     ap = argparse.ArgumentParser(description="Recommend a premortem-code mode for a diff.")
     ap.add_argument("--diff", help="path to a unified diff (default: read stdin)")
     args = ap.parse_args(argv)
