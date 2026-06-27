@@ -1,0 +1,21 @@
+{
+  "name": "premortem-code",
+  "owner": {
+    "name": "Felipe Moulin"
+  },
+  "description": "Marketplace for the premortem-code Claude Code skill.",
+  "plugins": [
+    {
+      "name": "premortem-code",
+      "source": "./",
+      "description": "Adversarial pre-mortem on a code change with a GO/REFINE/REWORK/ABANDON verdict and optional SARIF export. Stack-aware for 14 stacks.",
+      "version": "2.0.0",
+      "author": {
+        "name": "Felipe Moulin"
+      },
+      "homepage": "https://github.com/fbmoulin/premortem-code",
+      "license": "MIT",
+      "keywords": ["code-review", "risk-analysis", "pre-mortem", "sarif", "ci"]
+    }
+  ]
+}

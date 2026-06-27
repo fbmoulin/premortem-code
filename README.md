@@ -49,19 +49,30 @@ flowchart LR
 
 ## 🚀 Quick start
 
+**Install as a Claude Code plugin** (recommended):
+
+```text
+/plugin marketplace add fbmoulin/premortem-code
+/plugin install premortem-code@premortem-code
+```
+
+<details>
+<summary>Or install manually as a skill</summary>
+
+<br/>
+
 ```bash
-# 1. Install into your personal skills dir
+# personal scope
 cp -r premortem-code ~/.claude/skills/premortem-code
-
-# 2. (optional) enable the SARIF exporter
-python3 -c "import yaml" || pip install pyyaml
-
-# 3. verify
+# project scope (commit it so the whole team gets it)
+cp -r premortem-code <repo>/.claude/skills/
+# verify
 ls ~/.claude/skills/premortem-code      # → SKILL.md  assets/  scripts/
 ```
 
-> **Project scope** (commit it to a repo so the whole team gets it):
-> `cp -r premortem-code <repo>/.claude/skills/`
+</details>
+
+> The SARIF exporter needs `pyyaml`: `python3 -c "import yaml" || pip install pyyaml`.
 
 Then, in **any** Claude Code session, just ask:
 
@@ -168,6 +179,9 @@ anything reaches the report.
 
 ```text
 premortem-code/
+├── .claude-plugin/              # plugin + marketplace manifests (/plugin install)
+│   ├── plugin.json
+│   └── marketplace.json
 ├── SKILL.md                     # router: workflow · stack table · verdict rubric · mode selection
 ├── assets/
 │   ├── fragility-catalog-core.md      # the 10 universal categories (+ TOC)
