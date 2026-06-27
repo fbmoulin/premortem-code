@@ -47,3 +47,20 @@ the skill could. For a CI gate that blocks on REWORK/ABANDON, that precision is 
 point — without it, correct PRs get blocked as often as broken ones.
 
 Caveat: n=2 fixtures, single run each; indicative, not statistically robust.
+
+## Per-stack fixtures (expected floors — ground truth, not yet run)
+
+Added 2026-06-27 under `tests/fixtures/<stack>/{bug,clean}.<ext>` to extend coverage beyond
+Python+Redis. These define the **recall/precision floor** each pair should clear; framed as
+floors (e.g. "≥1 high", "0 high"), not exact finding lists, since the result depends on the
+model running the skill. They are intended for the same blind-subagent eval method as above and
+are **not** automated in CI.
+
+| Stack | Fixture | Expected floor (recall / precision) |
+|---|---|---|
+| postgres | `bug.sql` (non-idempotent backfill: ADD COLUMN w/o IF NOT EXISTS + additive UPDATE) | ≥1 `high` (non-idempotent migration; cat 6/10) → REWORK or REFINE-with-high |
+| postgres | `clean.sql` (IF NOT EXISTS + absolute SET backfill) | 0 `high` |
+| agents-mcp | `bug.py` (handler reads `userId`; schema advertises `user_id`) | ≥1 `high` (stringly-typed producer/consumer drift; cat 3) |
+| agents-mcp | `clean.py` (handler and schema agree on `user_id`) | 0 `high` |
+| docker-k8s | `bug.yaml` (`image: …:latest`, no probe/limits) | ≥1 `high` (load-bearing default / mutable tag; cat 8/10) |
+| docker-k8s | `clean.yaml` (digest-pinned image + readiness probe + limits) | 0 `high` |

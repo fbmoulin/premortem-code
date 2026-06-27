@@ -1,0 +1,6 @@
+# Dev/test dependencies for premortem-code.
+# The skill itself needs nothing at runtime; the SARIF exporter needs pyyaml.
+# jsonschema is only used by the SARIF CLI end-to-end test (test_sarif_cli_e2e.py).
+pytest
+pyyaml
+jsonschema<5

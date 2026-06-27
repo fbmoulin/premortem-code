@@ -56,7 +56,11 @@ neste branch**; as oportunidades ficam como backlog recomendado.
    → A correção #2 abriu folga (agora 960; ~64 ch livres). Recomenda-se manter folga em edições
    futuras.
 
-### 🟡 Oportunidades (backlog — não aplicadas)
+### 🟡 Oportunidades (backlog)
+
+> **Atualização 2026-06-27:** itens 6, 7 e 8 endereçados no incremento
+> `docs/superpowers/specs/ci-and-eval-increment.md` (branch `claude/readme-modernize-ppe60t`).
+> Item 5 segue como decisão consciente de não-fazer.
 
 5. **Convenção de pastas `references/` vs `assets/`.** O `skill-creator` distingue `references/`
    (docs carregados sob demanda), `assets/` (templates/ícones/fontes) e `scripts/` (executáveis).
@@ -65,18 +69,17 @@ neste branch**; as oportunidades ficam como backlog recomendado.
    desvia da convenção atual. **Decisão: não reorganizar** — rename quebraria caminhos no SKILL.md,
    no installer e no próprio addendum, com baixo ganho funcional.
 
-6. **`assets/fragility-catalog-core.md` (134 linhas) sem table-of-contents.** Best-practice
-   recomenda TOC em arquivos de referência > 100 linhas, para que leituras parciais (`head`) ainda
-   revelem o escopo completo. Adicionar um índice das 10 categorias no topo.
+6. ✅ **TOC no `assets/fragility-catalog-core.md`** — feito: seção `## Contents` com as 10 categorias.
 
-7. **Sem CI.** Não há `.github/workflows`. `pytest` e `install-premortem.sh` rodam só manualmente.
-   Um workflow rodando `pytest -q` + `shellcheck install-premortem.sh` a cada push pegaria regressões
-   (ex.: drift template ↔ exportador) automaticamente.
+7. ✅ **CI** — feito: `.github/workflows/ci.yml` roda `pytest` (matriz 3.10–3.13) + `shellcheck` a cada
+   push/PR, least-privilege e actions pinadas por SHA + Dependabot.
 
-8. **Cobertura de teste.** (a) O exportador SARIF é testado só em nível de função — falta um teste
-   **E2E do CLI** (`main(["--input", fixture])` → valida o JSON). (b) `install-premortem.sh` não tem
-   `shellcheck`/`bats`. (c) Há 14 stacks mas só **2 fixtures** de eval (Python+Redis); regressões em
-   addenda 7–14 passariam despercebidas (gap já reconhecido no spec).
+8. **Cobertura de teste.** (a) ✅ **E2E do CLI SARIF** — feito (`tests/test_sarif_cli_e2e.py`, valida o
+   `.sarif.json` contra o schema OASIS). (b) ✅ **shellcheck** no installer agora roda no CI. (c) ✅ **Fixtures
+   por stack** — adicionados 3 (postgres, agents-mcp, docker-k8s); os 11 stacks restantes seguem como backlog.
+
+9. **Classificador de effort/mode** (novo) — ✅ feito: `assets/effort-classification.md` +
+   `scripts/classify_effort.py` (advisory) recomendam `quick`/`standard`/`deep` por dificuldade/blast-radius.
 
 ## Itens verificados como corretos (não são problemas)
 

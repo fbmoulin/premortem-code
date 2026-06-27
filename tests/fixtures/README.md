@@ -11,3 +11,15 @@ Two minimal Python+Redis "diffs" with a known ground truth:
 
 These are the falsifiable floor for "behaviour-equivalence": recall on the bug,
 precision on the clean.
+
+## Per-stack fixtures (`<stack>/{bug,clean}.<ext>`)
+
+Added 2026-06-27 to extend coverage beyond Python+Redis. Each pair has a planted
+fragility (bug) and a correct counterpart (clean), with the expected recall/precision
+floor recorded in `EVAL-RESULTS.md`:
+
+- `postgres/` — non-idempotent migration (additive backfill) vs idempotent (`IF NOT EXISTS` + absolute SET).
+- `agents-mcp/` — tool/handler key drift (`userId` vs schema's `user_id`) vs agreeing keys.
+- `docker-k8s/` — load-bearing default (`:latest` tag, no probe/limits) vs digest-pinned with probe/limits.
+
+Like the originals, these drive the manual blind-subagent eval; they are not run in CI.

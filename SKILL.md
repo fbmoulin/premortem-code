@@ -77,6 +77,15 @@ stacks fall back to the core catalogue per step 2.)
 - `deep` — 3 sub-agents (distinct lenses), `high`+`medium`+`low`+cross-cutting
   contradictions. ~20-40 min. For critical/infra changes.
 
+## Mode selection
+
+If the user did not name a mode, pick one by the change's difficulty and blast radius (not
+its line count), per `assets/effort-classification.md`: sensitive surfaces (migrations,
+auth/RLS, concurrency, infra) or wide/multi-module changes → `deep`; small local changes →
+`quick`; otherwise `standard`. When in doubt, round up. Optionally run
+`scripts/classify_effort.py` (`git diff | python scripts/classify_effort.py`) for a
+deterministic, advisory recommendation. The choice is a default; the user can override.
+
 ## Verdict (operational — runs must converge)
 
 Severity is `high|medium|low` (no "critical"; a source "critical" maps to `high`).
@@ -111,7 +120,9 @@ Failure narrative, optional Hardening), then `## Dropped findings`.
 - `assets/subagent-prompt.md` — the adversarial sub-agent template; read when spawning.
 - `assets/verification-protocol.md` — the anti-false-positive gates; read before reporting.
 - `assets/premortem-md-template.md` — the exact output format; read when writing.
+- `assets/effort-classification.md` — how to pick the run mode; read for "Mode selection".
 - `scripts/sarif_export.py` — run to export a PREMORTEM to SARIF (do not read into context).
+- `scripts/classify_effort.py` — run to get an advisory mode recommendation for a diff.
 
 ## When NOT to run
 

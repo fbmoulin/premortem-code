@@ -1,0 +1,14 @@
+# Deployment for the api service. [EVAL FIXTURE: contains a planted bug]
+# Load-bearing default: the mutable `latest` tag means a later, unrelated rollout
+# silently re-pulls a different image; no probe/limits compound the blast radius.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: api
+          image: registry.example.com/api:latest

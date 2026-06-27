@@ -10,6 +10,23 @@ make during a normal change — would break something in a non-obvious way. For 
 category, the question is always: *"what reasonable change here breaks this, and how
 does the breakage stay hidden?"*
 
+## Contents
+
+- [Calibration rules](#calibration-rules-apply-to-every-finding)
+- [Severity scale](#severity-scale-exactly-three-levels--no-critical)
+- [Confidence](#confidence-used-by-the-verdict-rubric)
+- The 10 categories:
+  1. [Implicit ordering dependencies](#1-implicit-ordering-dependencies)
+  2. [Coupling through shared mutable state](#2-coupling-through-shared-mutable-state)
+  3. [Stringly-typed contracts](#3-stringly-typed-contracts)
+  4. [Assumptions baked into data transformations](#4-assumptions-baked-into-data-transformations)
+  5. [Coincidental correctness](#5-coincidental-correctness)
+  6. [Non-atomic compound operations](#6-non-atomic-compound-operations)
+  7. [Invisible invariants](#7-invisible-invariants)
+  8. [Load-bearing defaults](#8-load-bearing-defaults)
+  9. [Implicit resource lifecycle](#9-implicit-resource-lifecycle)
+  10. [Version-coupled assumptions](#10-version-coupled-assumptions)
+
 ## Calibration rules (apply to every finding)
 
 1. **Not a current bug.** If something is broken *today*, that is a separate report
