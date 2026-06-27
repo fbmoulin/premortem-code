@@ -1,5 +1,11 @@
 # Spec — Reconstrução da skill `premortem-code`
 
+> **⚠️ SUPERSEDED / documento de auditoria.** Este spec descreve o **milestone inicial de
+> 6 stacks (10 assets)**. O estado atual do repo — **14 stacks / 18 assets** — é definido por
+> [`stack-addenda-increment.md`](./stack-addenda-increment.md). Os critérios de aceite abaixo
+> ("4 base + 6 stack = 10 assets", "6 shipped addenda") referem-se àquele milestone, **não** ao
+> repo atual; mantidos aqui apenas como trilha histórica. Não reescrever o corpo.
+
 Status: **REVISADO E PRONTO PARA FASE 5** — plan-review-cycle 2 rounds, 21 findings, todos
 fechados, validador exit 0 (2026-06-19). Aguardando go do Felipe para execução.
 Data: 2026-06-19 · Autor: Felipe (via Claude) · Repo: `~/projetos-2026/premortem-code`

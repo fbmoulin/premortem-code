@@ -1,9 +1,9 @@
 ---
 name: premortem-code
-description: 'Conduct an adversarial pre-mortem on a proposed code change: assume it has
-  already failed in production and enumerate the concrete, location-pinned ways it breaks
-  (concurrency, data integrity, partial rollout, contract/type drift, agent/MCP, migrations),
-  drop false positives via a verification protocol, and issue a GO/REFINE/REWORK/ABANDON
+description: 'Conducts an adversarial pre-mortem on a proposed code change: assumes it has
+  already failed in production and enumerates the concrete, location-pinned ways it breaks
+  (concurrency, data integrity, partial rollout, contract/type drift, migrations), drops
+  false positives via a verification protocol, and issues a GO/REFINE/REWORK/ABANDON
   verdict with optional SARIF export for GitHub Code Scanning. Use this whenever the user is
   about to merge, ship, deploy, or release a PR, branch, or diff; asks "what could go wrong",
   "is this safe for production", "review the risks before merging", "premortem", or
@@ -50,7 +50,7 @@ places where a *plausible future edit* breaks something non-obviously.
 
 ## Stack detection
 
-Load only the addendum for each detected stack. (These 6 are the shipped addenda; other
+Load only the addendum for each detected stack. (These 14 are the shipped addenda; other
 stacks fall back to the core catalogue per step 2.)
 
 | Trigger | Addendum to load |
