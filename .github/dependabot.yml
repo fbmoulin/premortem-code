@@ -1,0 +1,9 @@
+version: 2
+updates:
+  # Keep the SHA-pinned GitHub Actions current (security + feature flags).
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci"
