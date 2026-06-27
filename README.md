@@ -10,6 +10,7 @@ on a proposed code change, surfacing the fragilities that *pass tests but bite l
 
 <br/>
 
+[![Version 1.2.0](https://img.shields.io/badge/version-1.2.0-d97757.svg?style=flat-square)](SKILL.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg?style=flat-square)](LICENSE)
 [![Python ≥3.10](https://img.shields.io/badge/Python-%E2%89%A53.10-3776ab.svg?style=flat-square&logo=python&logoColor=white)](#-requirements)
 [![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-d97757.svg?style=flat-square)](https://code.claude.com/docs/en/skills)

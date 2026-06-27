@@ -14,7 +14,7 @@ description: 'Conducts an adversarial pre-mortem on a proposed code change: assu
 license: MIT
 metadata:
   author: Felipe Moulin (fbmoulin)
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 # premortem-code
