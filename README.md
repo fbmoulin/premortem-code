@@ -188,7 +188,7 @@ premortem-code/
 ## 🔧 Requirements
 
 - **Python ≥ 3.10** and **`pyyaml`** — only for the SARIF exporter; the skill itself needs neither.
-- Ships **14 stacks / 18 assets** (4 base + 14 stack), matching the original deployment kit's coverage.
+- Ships **14 stacks / 19 assets** (5 base + 14 stack), including the effort-classification reference.
 
 <details>
 <summary>📐 How it was built</summary>
