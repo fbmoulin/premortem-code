@@ -68,7 +68,7 @@ cp -r premortem-code ~/.claude/skills/premortem-code
 # project scope (commit it so the whole team gets it)
 cp -r premortem-code <repo>/.claude/skills/
 # verify
-ls -a ~/.claude/skills/premortem-code   # → .claude-plugin/  SKILL.md  assets/  scripts/
+ls -A ~/.claude/skills/premortem-code   # → .claude-plugin/  SKILL.md  assets/  scripts/
 ```
 
 </details>
