@@ -10,7 +10,7 @@ on a proposed code change, surfacing the fragilities that *pass tests but bite l
 
 <br/>
 
-[![Version 2.1.0](https://img.shields.io/badge/version-2.1.0-d97757.svg?style=flat-square)](SKILL.md)
+[![Version 2.2.0](https://img.shields.io/badge/version-2.2.0-d97757.svg?style=flat-square)](skills/premortem-code/SKILL.md)
 [![CI](https://github.com/fbmoulin/premortem-code/actions/workflows/ci.yml/badge.svg)](https://github.com/fbmoulin/premortem-code/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg?style=flat-square)](LICENSE)
 [![Python ≥3.10](https://img.shields.io/badge/Python-%E2%89%A53.10-3776ab.svg?style=flat-square&logo=python&logoColor=white)](#-requirements)
@@ -68,12 +68,13 @@ flowchart LR
 <br/>
 
 ```bash
+git clone https://github.com/fbmoulin/premortem-code.git
 # personal scope
-cp -r premortem-code ~/.claude/skills/premortem-code
+cp -r premortem-code/skills/premortem-code ~/.claude/skills/premortem-code
 # project scope (commit it so the whole team gets it)
-cp -r premortem-code <repo>/.claude/skills/
+cp -r premortem-code/skills/premortem-code <repo>/.claude/skills/
 # verify
-ls -A ~/.claude/skills/premortem-code   # → .claude-plugin/  SKILL.md  assets/  scripts/
+ls -A ~/.claude/skills/premortem-code   # → SKILL.md  assets/  scripts/
 ```
 
 </details>
@@ -91,7 +92,7 @@ Roda um premortem-code standard nas mudanças desta PR.
 **Also works on plans/specs** (not just code) — *"pre-mortem this spec before we build it"*. It assumes the
 plan already failed in execution and surfaces the flaws (non-falsifiable acceptance criteria, undeclared
 premises, missing rollback/idempotency, task-ordering gaps…) via
-[`assets/plan-failure-catalog.md`](assets/plan-failure-catalog.md), with the same verdict.
+[`assets/plan-failure-catalog.md`](skills/premortem-code/assets/plan-failure-catalog.md), with the same verdict.
 
 ## 🎚️ Modes
 
@@ -102,7 +103,7 @@ premises, missing rollback/idempotency, task-ordering gaps…) via
 | `deep` | 3 (distinct lenses) | everything + cross-cutting contradictions | critical / infra changes | ~20–40 min |
 
 **Not sure which mode?** Let the change pick it — see the decision table in
-[`assets/effort-classification.md`](assets/effort-classification.md), or run the advisory classifier:
+[`assets/effort-classification.md`](skills/premortem-code/assets/effort-classification.md), or run the advisory classifier:
 
 ```bash
 git diff | python ~/.claude/skills/premortem-code/scripts/classify_effort.py
@@ -151,7 +152,7 @@ upload-sarif:
   steps:
     - uses: actions/checkout@<sha>            # v7.x
     - name: Generate PREMORTEM .sarif.json    # e.g. via your premortem step, then:
-      run: python scripts/sarif_export.py --input .premortems/PREMORTEM-<ISO8601>.md
+      run: python skills/premortem-code/scripts/sarif_export.py --input .premortems/PREMORTEM-<ISO8601>.md
     - uses: github/codeql-action/upload-sarif@<sha>   # v4 (v3 deprecates Dec 2026)
       with:
         sarif_file: .premortems/PREMORTEM-<ISO8601>.sarif.json
@@ -164,7 +165,7 @@ This repo's own CI (`.github/workflows/ci.yml`) runs only `pytest` + `shellcheck
 
 ## 🧰 Coverage
 
-The universal **10-category fragility catalogue** ([`assets/fragility-catalog-core.md`](assets/fragility-catalog-core.md))
+The universal **10-category fragility catalogue** ([`assets/fragility-catalog-core.md`](skills/premortem-code/assets/fragility-catalog-core.md))
 is the baseline for every run. On top of it, **14 stack-specific addenda** sharpen the analysis:
 
 <table>
@@ -183,7 +184,7 @@ is the baseline for every run. On top of it, **14 stack-specific addenda** sharp
 </table>
 
 Stacks outside the table fall back to the core catalogue. A **verification protocol**
-([`assets/verification-protocol.md`](assets/verification-protocol.md)) drops false positives before
+([`assets/verification-protocol.md`](skills/premortem-code/assets/verification-protocol.md)) drops false positives before
 anything reaches the report.
 
 ## 📁 Structure
@@ -193,18 +194,19 @@ premortem-code/
 ├── .claude-plugin/              # plugin + marketplace manifests (/plugin install)
 │   ├── plugin.json
 │   └── marketplace.json
-├── SKILL.md                     # router: workflow · stack table · verdict rubric · mode selection
-├── assets/
-│   ├── fragility-catalog-core.md      # the 10 universal categories (+ TOC)
-│   ├── plan-failure-catalog.md        # the 10 plan/spec failure modes
-│   ├── verification-protocol.md       # anti-false-positive gates
-│   ├── subagent-prompt.md             # adversarial sub-agent template
-│   ├── premortem-md-template.md       # exact output contract
-│   ├── effort-classification.md       # quick/standard/deep decision table
-│   └── stack-*.md                     # 14 stack addenda
-├── scripts/
-│   ├── sarif_export.py          # PREMORTEM .md → SARIF 2.1.0
-│   └── classify_effort.py       # advisory mode/effort recommendation for a diff
+├── skills/premortem-code/        # the skill itself (this is what /plugin loads)
+│   ├── SKILL.md                 # router: workflow · stack table · verdict rubric · mode selection
+│   ├── assets/
+│   │   ├── fragility-catalog-core.md  # the 10 universal categories (+ TOC)
+│   │   ├── plan-failure-catalog.md    # the 10 plan/spec failure modes
+│   │   ├── verification-protocol.md   # anti-false-positive gates
+│   │   ├── subagent-prompt.md         # adversarial sub-agent template
+│   │   ├── premortem-md-template.md   # exact output contract
+│   │   ├── effort-classification.md   # quick/standard/deep decision table
+│   │   └── stack-*.md                 # 14 stack addenda
+│   └── scripts/
+│       ├── sarif_export.py      # PREMORTEM .md → SARIF 2.1.0
+│       └── classify_effort.py   # advisory mode/effort recommendation for a diff
 ├── tests/                       # 22 tests: SARIF unit + CLI E2E + classifier; per-stack eval fixtures
 ├── .github/workflows/ci.yml     # pytest (3.10–3.13) + shellcheck, least-privilege, SHA-pinned
 ├── CREDITS.md · NOTICE · LICENSE

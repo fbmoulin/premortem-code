@@ -10,7 +10,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "skills" / "premortem-code" / "scripts"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sarif_export as sx  # noqa: E402
 from test_sarif_export import SAMPLE  # reuse the canonical PREMORTEM fixture  # noqa: E402
