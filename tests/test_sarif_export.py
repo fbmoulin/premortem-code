@@ -12,7 +12,7 @@ Cases pinned by the plan-review-cycle:
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "skills" / "premortem-code" / "scripts"))
 import sarif_export as sx  # noqa: E402
 
 SAMPLE = """---

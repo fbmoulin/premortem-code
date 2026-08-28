@@ -9,9 +9,10 @@
 #
 # Defaults:
 #   --scope=personal   installs to ~/.claude/skills/premortem-code/
-#   --source=$PWD      assumes script is run from a dir containing
-#                      fase1/, fase2/, fase3/ subdirectories with the
-#                      delivered skill files
+#   --source=$PWD      looks for the skill files under
+#                      skills/premortem-code/ (repo layout), then the
+#                      legacy fase1/, fase2/, fase3/ subdirectories,
+#                      then $SOURCE_DIR itself
 #   --prune            wipe target assets/ and scripts/ before copying
 #                      (removes stale/renamed files from a previous install)
 #
@@ -101,6 +102,7 @@ fi
 SKILL_MD=""
 PHASE1_DIR=""
 for candidate in \
+  "$SOURCE_DIR/skills/premortem-code/SKILL.md" \
   "$SOURCE_DIR/premortem-code-fase1/SKILL.md" \
   "$SOURCE_DIR/fase1/SKILL.md" \
   "$SOURCE_DIR/SKILL.md"; do
@@ -113,6 +115,7 @@ done
 
 if [ -z "$SKILL_MD" ]; then
   echo "Error: SKILL.md not found. Expected one of:" >&2
+  echo "  $SOURCE_DIR/skills/premortem-code/SKILL.md" >&2
   echo "  $SOURCE_DIR/premortem-code-fase1/SKILL.md" >&2
   echo "  $SOURCE_DIR/fase1/SKILL.md" >&2
   echo "  $SOURCE_DIR/SKILL.md" >&2

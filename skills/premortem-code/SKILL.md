@@ -15,7 +15,7 @@ description: 'Conducts an adversarial pre-mortem on a proposed code change: assu
 license: MIT
 metadata:
   author: Felipe Moulin (fbmoulin)
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # premortem-code
@@ -43,8 +43,10 @@ places where a *plausible future edit* breaks something non-obviously.
    Evidence → Severity → Confidence → Format). Discarded candidates go to "Dropped
    findings" with the gate that failed.
 5. **Write the report** to `.premortems/PREMORTEM-<ISO8601>.md` using
-   `assets/premortem-md-template.md` (create `.premortems/` if missing). `Location`
-   MUST be `file:line` or `file:start-end`.
+   `assets/premortem-md-template.md` (create `.premortems/` if missing). Resolve
+   `.premortems/` against the **reviewed project's** root, never the skill's install
+   directory — they differ whenever the skill is loaded from `~/.claude/` or a plugin
+   cache. `Location` MUST be `file:line` or `file:start-end`.
 6. **Assign the verdict** (operational rules below) and fill `risk_counts`.
 7. **Optional SARIF.** Run `scripts/sarif_export.py --input <the file>` to produce the
    companion `.sarif.json` for GitHub Code Scanning.
